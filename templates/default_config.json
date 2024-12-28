@@ -1,0 +1,19 @@
+{
+  "url": "http://localhost:3000",
+  "request_count": 1,
+  "request_thread": 1,
+  "method": "GET",
+  "headers": [
+    {
+      "Content-Type": "application/json"
+    }
+  ],
+  "params": [
+    {
+      "foo": "bars"
+    }
+  ],
+  "body": {
+    "foo": "bars"
+  }
+}

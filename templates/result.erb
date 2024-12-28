@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gráficos de Requests</title>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+  <link
+      href="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.css"
+      rel="stylesheet"
+  />
+</head>
+<body>
+  <h2>Tempo das Requests</h2>
+  <div id="timeRequestsChart"></div>
+
+  <h2>Status das Requests</h2>
+  <div id="statusRequestsChart"></div>
+
+  <br>
+
+    <div class="relative overflow-x-auto">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-900 uppercase dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Horario: Inicio do Teste
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Horario: Fim do Teste
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Quantidade de requests
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Quantidade de erros
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="bg-white dark:bg-gray-800">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        <%= start_datetime %>
+                    </th>
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        <%= end_datetime %>
+                    </td>
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                          <%= data[:request_count]["requests"] %>
+                    </td>
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                          <%= data[:report]["errors"] %>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+  <script>
+    const timeRequestData = <%= data[:report].values %>
+
+    const statusRequestData = <%= data[:status].values %>
+
+    function renderTimeRequestsChart(data) {
+      const options = {
+        chart: {
+          type: 'bar',
+          height: 350,
+        },
+        series: [
+          {
+            name: 'Requests',
+            data: data
+          }
+        ],
+        xaxis: {
+          categories: ['>= 01ms < 10ms', '>= 10ms < 50ms', '>= 50ms < 100ms', '>= 100ms < 300ms', '>= 300ms < 500ms', '>= 500ms < 1000ms', '>= 1000ms < 1500ms', '>= 1500ms < 2000ms', '>= 2000ms', 'errors'],
+          title: {
+            text: 'Intervalos de Tempo (ms)',
+          }
+        },
+        yaxis: {
+          title: {
+            text: 'Número de Requests'
+          }
+        },
+        title: {
+          text: 'Distribuição do Tempo das Requests',
+          align: 'center'
+        },
+        colors: ['#1E90FF'],
+        dataLabels: {
+          enabled: true
+        }
+      };
+
+      const chart = new ApexCharts(document.querySelector('#timeRequestsChart'), options);
+      chart.render();
+    }
+
+    function renderStatusRequestsChart(data) {
+      const options = {
+        chart: {
+          type: 'bar',
+          height: 350,
+        },
+        series: [
+          {
+            name: 'Requests',
+            data: data
+          }
+        ],
+        xaxis: {
+          categories: ['1xx', '2xx', '3xx', '4xx', '5xx'],
+          title: {
+            text: 'Códigos de Status HTTP',
+          }
+        },
+        yaxis: {
+          title: {
+            text: 'Número de Requests'
+          }
+        },
+        title: {
+          text: 'Distribuição dos Códigos de Status',
+          align: 'center'
+        },
+        colors: ['#FF6347'],
+        dataLabels: {
+          enabled: true
+        }
+      };
+
+      const chart = new ApexCharts(document.querySelector('#statusRequestsChart'), options);
+      chart.render();
+    }
+
+    renderTimeRequestsChart(timeRequestData);
+    renderStatusRequestsChart(statusRequestData);
+  </script>
+</body>
+</html>
